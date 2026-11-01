@@ -1,19 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-
-export type Product = {
-  id: number;
-  name: string;
-  code: string;
-  category: string;
-  description: string;
-  color: string;
-  shape: "box" | "bag" | "paper";
-};
+import type { PackagingProduct } from "../catalog-data";
 
 type CatalogBrowserProps = {
-  products: Product[];
+  products: PackagingProduct[];
   categories: string[];
 };
 
@@ -26,7 +17,7 @@ function CategoryOptions({
   onSelect,
 }: {
   categories: string[];
-  products: Product[];
+  products: PackagingProduct[];
   selected: string;
   onSelect: (category: string) => void;
 }) {
@@ -67,7 +58,9 @@ export default function CatalogBrowser({ products, categories }: CatalogBrowserP
       .filter((product) => {
         const matchesSearch =
           product.name.toLocaleLowerCase("tr-TR").includes(query) ||
-          product.code.toLocaleLowerCase("tr-TR").includes(query);
+          product.code.toLocaleLowerCase("tr-TR").includes(query) ||
+          product.brand?.toLocaleLowerCase("tr-TR").includes(query) ||
+          product.specs.some((spec) => spec.toLocaleLowerCase("tr-TR").includes(query));
         const matchesCategory = category === allCategoriesLabel || product.category === category;
 
         return matchesSearch && matchesCategory;
@@ -136,20 +129,24 @@ export default function CatalogBrowser({ products, categories }: CatalogBrowserP
                 <article className="catalog-product-card" key={product.id}>
                   <div
                     aria-label={`${product.name} için temsili ürün görsel alanı`}
-                    className="catalog-product-art"
+                    className={`catalog-product-art catalog-product-art-${product.shape}`}
                     role="img"
-                    style={{ backgroundColor: product.color }}
                   >
-                    <span className="catalog-product-art-label">ÜRÜN GÖRSELİ</span>
+                    <span className="catalog-product-art-label">ST AMBALAJ</span>
                     <div className={`catalog-package-shape catalog-package-${product.shape}`} aria-hidden="true">
-                      <span>{product.code}</span>
+                      <span>{product.shape === "glove" ? "PN" : product.shape === "roll" ? "ST" : product.shape === "tape" ? "ST" : product.shape === "corner" ? "L" : "ST"}</span>
                     </div>
+                    <span className="catalog-art-code">{product.code}</span>
                   </div>
                   <div className="catalog-product-details">
                     <p className="catalog-item-category">{product.category}</p>
                     <h2>{product.name}</h2>
                     <p className="catalog-item-code">Ürün kodu: <strong>{product.code}</strong></p>
                     <p className="catalog-item-description">{product.description}</p>
+                    <details className="catalog-product-specs">
+                      <summary>Ürün özellikleri</summary>
+                      <ul>{product.specs.map((spec) => <li key={spec}>{spec}</li>)}</ul>
+                    </details>
                     <a className="catalog-product-quote" href="#teklif">
                       Bu ürün için teklif iste <span aria-hidden="true">↗</span>
                     </a>

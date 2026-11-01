@@ -1,6 +1,6 @@
 
 import type { ReactNode } from "react";
-import { packagingCategories } from "./catalog-data";
+import { packagingCategories, packagingProducts } from "./catalog-data";
 import { SiteFooter, SiteHeader } from "./components/site-chrome";
 import { contactDetails } from "./site-config";
 
@@ -8,11 +8,7 @@ const whatsappUrl = contactDetails.phone
   ? `https://wa.me/${contactDetails.phone.replace(/\D/g, "")}`
   : "";
 
-const products = [
-  { name: "Kraft Karton Kutu", code: "AMB-001", category: "Karton Ambalaj", shape: "box" },
-  { name: "Kraft Kâğıt Poşet", code: "AMB-002", category: "Kâğıt Ambalaj", shape: "bag" },
-  { name: "Kargo Poşeti", code: "AMB-003", category: "Gönderi Ambalajı", shape: "mailer" },
-];
+const featuredProducts = [1, 7, 16].map((id) => packagingProducts.find((product) => product.id === id)!);
 
 const reasons = [
   { title: "Kaliteli Ürünler", description: "Ürün seçeneklerini inceleyin; malzeme ve kullanım detaylarını ihtiyaçlarınıza göre değerlendirin.", icon: "quality" },
@@ -29,6 +25,11 @@ function CategoryIcon({ name }: { name: string }) {
     quality: <><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z" /></>,
     delivery: <><path d="M3 7h11v11H3zM14 11h4l3 3v4h-7z" /><circle cx="7.5" cy="19" r="1.5" /><circle cx="17.5" cy="19" r="1.5" /></>,
     support: <><path d="M4 13v-2a8 8 0 0 1 16 0v2" /><path d="M4 13h3v6H6a2 2 0 0 1-2-2v-4ZM20 13h-3v6h1a2 2 0 0 0 2-2v-4ZM12 21h2" /></>,
+    tape: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /><path d="M18 18 21 21" /></>,
+    film: <><path d="M5 8a7 7 0 0 1 14 0v8a7 7 0 0 1-14 0V8Z" /><path d="M8 8h8M8 16h8" /></>,
+    corner: <><path d="M5 4v15h15" /><path d="M9 8v7h7" /></>,
+    bubble: <><circle cx="8" cy="8" r="2" /><circle cx="16" cy="8" r="2" /><circle cx="8" cy="16" r="2" /><circle cx="16" cy="16" r="2" /><path d="M4 12h16" /></>,
+    gloves: <><path d="M7 12V6a1.5 1.5 0 0 1 3 0v4-6a1.5 1.5 0 0 1 3 0v6-5a1.5 1.5 0 0 1 3 0v6-3a1.5 1.5 0 0 1 3 0v7c0 4-2.5 7-6.5 7h-1c-2.2 0-3.5-1-4.8-3.1L4 14a1.7 1.7 0 0 1 2.7-2.1L9 14" /></>,
   };
 
   return (
@@ -90,14 +91,14 @@ export default function Home() {
         <div className="home-container">
           <div className="home-section-heading">
             <div><p className="home-eyebrow">ÖNE ÇIKANLAR</p><h2 id="products-title">Katalogdan seçtiklerimiz.</h2></div>
-            <p className="home-section-note">Örnek ürünleri inceleyin; tüm ürün seçenekleri katalog sayfasında.</p>
+            <p className="home-section-note">Ambalaj ürünlerimizi inceleyin; tüm ürün seçenekleri katalog sayfasında.</p>
           </div>
           <div className="home-product-grid">
-            {products.map((product, index) => (
+            {featuredProducts.map((product, index) => (
               <article className="home-product-card" key={product.code}>
                 <a className={`home-product-image product-figure-${product.shape}`} href="/products" aria-label={`${product.name} ürün kataloğunda`}>
                   <span className="home-product-index">0{index + 1}</span>
-                  <span className="product-illustration" aria-hidden="true"><i /><b>{product.shape === "box" ? "ST" : product.shape === "bag" ? "KÂĞIT" : "GÖNDERİ"}</b></span>
+                  <span className="product-illustration" aria-hidden="true"><i /><b>{product.code}</b></span>
                 </a>
                 <div className="home-product-info">
                   <p className="home-product-category">{product.category}</p><h3>{product.name}</h3>
