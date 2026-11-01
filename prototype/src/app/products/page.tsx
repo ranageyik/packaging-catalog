@@ -1,16 +1,13 @@
 
-"use client";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { packagingCategories } from "../catalog-data";
+import { SiteFooter, SiteHeader } from "../components/site-chrome";
+import CatalogBrowser, { type Product } from "./catalog-browser";
 
-import { useMemo, useState } from "react";
-
-type Product = {
-  id: number;
-  name: string;
-  code: string;
-  category: string;
-  description: string;
-  color: string;
-  shape: "box" | "bag" | "paper";
+export const metadata: Metadata = {
+  title: "Ürün Kataloğu | ST Ambalaj",
+  description: "Karton kutu, ambalaj poşeti, kâğıt ve koruyucu ambalaj ürünlerini arayın ve kategorilere göre filtreleyin.",
 };
 
 const products: Product[] = [
@@ -28,172 +25,31 @@ const products: Product[] = [
   { id: 12, name: "Büyük Boy Kargo Poşeti", code: "AMB-012", category: "Ambalaj Poşetleri", description: "Farklı gönderi ihtiyaçlarına yönelik poşet.", color: "#bfc3b6", shape: "bag" },
 ];
 
-const categories = [
-  "Tüm Kategoriler",
-  "Karton Kutular",
-  "Ambalaj Poşetleri",
-  "Kâğıt Ambalajlar",
-  "Koruyucu Ambalaj",
-];
+const categories = packagingCategories.map(({ name }) => name);
 
 export default function ProductsPage() {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("Tüm Kategoriler");
-  const [sort, setSort] = useState("default");
-
-  const filteredProducts = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase("tr-TR");
-
-    return products
-      .filter((product) => {
-        const matchesSearch =
-          product.name.toLocaleLowerCase("tr-TR").includes(query) ||
-          product.code.toLocaleLowerCase("tr-TR").includes(query);
-
-        const matchesCategory =
-          category === "Tüm Kategoriler" || product.category === category;
-
-        return matchesSearch && matchesCategory;
-      })
-      .sort((a, b) => {
-        if (sort === "name") {
-          return a.name.localeCompare(b.name, "tr");
-        }
-        if (sort === "name-desc") {
-          return b.name.localeCompare(a.name, "tr");
-        }
-        return a.id - b.id;
-      });
-  }, [search, category, sort]);
-
   return (
-    <main className="catalog-page">
-      <header className="catalog-header">
-        <a className="catalog-logo" href="/"> 
-          <span className="logo-mark">P</span>
-          <span>PACKAGING <span className="logo-light">CO.</span></span>
-        </a>
-        <nav className="catalog-nav">
-          <a href="/#kategoriler">Kategoriler</a>
-          <a href="/products">Tüm Ürünler</a>
-          <a href="/#iletisim">İletişim</a>
-        </nav>
-        <a className="catalog-top-cta" href="#teklif">Teklif Al ↗</a>
-      </header>
+    <main className="catalog-page" id="top">
+      <SiteHeader />
 
-      <section className="catalog-intro">
-        <p className="eyebrow">ÜRÜN KATALOĞUMUZ</p>
-        <h1>Aradığınız ambalajı bulun.</h1>
-        <p className="catalog-lead">
-          Ürünlerimizi inceleyin, ihtiyacınıza uygun ambalaj çözümünü keşfedin
-          ve size özel teklif alın.
-        </p>
+      <section className="catalog-page-intro home-container" aria-labelledby="catalog-title">
+        <p className="catalog-kicker">ST AMBALAJ · ÜRÜN KATALOĞU</p>
+        <h1 id="catalog-title">İhtiyacınıza uygun<br /><span>ambalajı bulun.</span></h1>
+        <p>İşletmeniz için karton kutu, ambalaj poşeti, kâğıt ve koruyucu ambalaj seçeneklerini keşfedin.</p>
       </section>
 
-      <section className="catalog-controls" aria-label="Ürün arama ve filtreleme">
-        <div className="search-field">
-          <span aria-hidden="true">⌕</span>
-          <input
-            type="search"
-            placeholder="Ürün adı veya ürün koduyla ara..."
-            aria-label="Ürün ara"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
-          {search && (
-            <button className="clear-search" onClick={() => setSearch("")}>
-              Temizle
-            </button>
-          )}
-        </div>
+      <CatalogBrowser products={products} categories={categories} />
 
-        <div className="filter-row">
-          <label className="filter-field">
-            <span>Kategori</span>
-            <select value={category} onChange={(event) => setCategory(event.target.value)}>
-              {categories.map((item) => (
-                <option key={item} value={item}>{item}</option>
-              ))}
-            </select>
-          </label>
-
-          <label className="filter-field">
-            <span>Sıralama</span>
-            <select value={sort} onChange={(event) => setSort(event.target.value)}>
-              <option value="default">Varsayılan</option>
-              <option value="name">Ürün adı (A–Z)</option>
-              <option value="name-desc">Ürün adı (Z–A)</option>
-            </select>
-          </label>
-        </div>
-      </section>
-
-      <section className="catalog-results">
-        <div className="results-heading">
-          <p><strong>{filteredProducts.length}</strong> ürün listeleniyor</p>
-          {(search || category !== "Tüm Kategoriler") && (
-            <button
-              className="reset-filters"
-              onClick={() => {
-                setSearch("");
-                setCategory("Tüm Kategoriler");
-                setSort("default");
-              }}
-            >
-              Filtreleri temizle ↗
-            </button>
-          )}
-        </div>
-
-        {filteredProducts.length > 0 ? (
-          <div className="catalog-grid">
-            {filteredProducts.map((product, index) => (
-              <article className="catalog-card" key={product.id}>
-                <div className="catalog-art" style={{ backgroundColor: product.color }}>
-                  <span className="product-number">{String(index + 1).padStart(2, "0")}</span>
-                  <div className={`package-shape package-${product.shape}`}>
-                    <span>{product.code}</span>
-                  </div>
-                </div>
-                <div className="catalog-card-content">
-                  <p className="product-category">{product.category}</p>
-                  <h2>{product.name}</h2>
-                  <p className="product-description">{product.description}</p>
-                  <p className="product-code">Ürün kodu: {product.code}</p>
-                  <a className="product-quote" href={`#teklif-${product.code}`}>
-                    Bu ürün için teklif iste <span>↗</span>
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className="empty-results">
-            <h2>Aramanızla eşleşen ürün bulunamadı.</h2>
-            <p>Farklı bir ürün adı veya kategori deneyebilirsiniz.</p>
-            <button onClick={() => {
-              setSearch("");
-              setCategory("Tüm Kategoriler");
-            }}>
-              Tüm ürünleri göster
-            </button>
-          </div>
-        )}
-      </section>
-
-      <section className="catalog-contact" id="teklif">
+      <section className="catalog-offer home-container" id="teklif" aria-labelledby="catalog-offer-title">
         <div>
-          <p className="eyebrow">BİRLİKTE ÇALIŞALIM</p>
-          <h2>İhtiyacınıza uygun ambalajı birlikte bulalım.</h2>
-          <p>Ürünler, ölçüler ve toplu siparişler hakkında bilgi alın.</p>
+          <p className="catalog-kicker">TEKLİF VE BİLGİ</p>
+          <h2 id="catalog-offer-title">İşletmenizin ambalaj ihtiyacını konuşalım.</h2>
+          <p>Ürün, ölçü veya sipariş ihtiyacınızı paylaşın; size uygun seçenekleri birlikte değerlendirelim.</p>
         </div>
-        <a href="#iletisim" className="catalog-contact-button">Teklif ve iletişim ↗</a>
+        <Link className="home-button home-button-light" href="/#iletisim">Teklif için iletişime geçin <span aria-hidden="true">↗</span></Link>
       </section>
 
-      <footer className="catalog-footer">
-        <a className="catalog-logo" href="/">PACKAGING <span className="logo-light">CO.</span></a>
-        <p>Ürün listesi ve görseller şu an örnektir.</p>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
