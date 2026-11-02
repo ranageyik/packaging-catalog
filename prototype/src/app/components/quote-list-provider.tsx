@@ -25,7 +25,8 @@ type QuoteListContextValue = QuoteListState & {
   clearList: () => void;
 };
 
-const storageKey = "st-ambalaj-quote-list-v1";
+const storageKey = "st-ambalaj-quote-list-v2";
+const legacyStorageKey = "st-ambalaj-quote-list-v1";
 const serverSnapshot: QuoteListState = { items: [], isReady: false, storageError: "" };
 let snapshot = serverSnapshot;
 let initialized = false;
@@ -46,8 +47,13 @@ function isQuoteListItem(value: unknown): value is Omit<QuoteListItem, "unit"> &
 
 function readStorage(): QuoteListState {
   let savedList: string | null;
+  let isLegacyList = false;
   try {
     savedList = window.localStorage.getItem(storageKey);
+    if (savedList === null) {
+      savedList = window.localStorage.getItem(legacyStorageKey);
+      isLegacyList = savedList !== null;
+    }
   } catch {
     return {
       items: [],
@@ -80,23 +86,22 @@ function readStorage(): QuoteListState {
   const items: QuoteListItem[] = parsed.map((item) => {
     const unit = item.unit ?? "";
     const productUnit = packagingProducts.find((product) => product.code === item.code)?.unit;
-    const hasUnverifiedDefaultUnit = unit.trim().toLocaleLowerCase("tr") === "adet"
+    const hasUnverifiedDefaultUnit = isLegacyList
+      && unit.trim().toLocaleLowerCase("tr") === "adet"
       && productUnit?.trim().toLocaleLowerCase("tr") !== "adet";
     return {
       ...item,
       unit: hasUnverifiedDefaultUnit ? "" : unit,
     };
   });
-  const removedUnverifiedUnits = items.some((item, index) => item.unit !== parsed[index].unit);
-
-  if (removedUnverifiedUnits) {
+  if (isLegacyList) {
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(items));
     } catch {
       return {
         items,
         isReady: true,
-        storageError: "Eski listedeki doğrulanmamış birimler kaldırıldı ancak değişiklik tarayıcıya kaydedilemedi.",
+        storageError: "Eski teklif listesi yeni biçime kaydedilemedi; değişiklikler bu oturumda kullanılabilir.",
       };
     }
   }
