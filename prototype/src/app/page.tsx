@@ -4,6 +4,7 @@ import { packagingCategories, packagingProducts } from "./catalog-data";
 import { SiteFooter, SiteHeader } from "./components/site-chrome";
 import { QuoteListButton } from "./components/quote-list-button";
 import { WhatsAppLink } from "./components/whatsapp-link";
+import { getCategorySeoByName } from "./category-seo";
 import { contactDetails } from "./site-config";
 
 const featuredProducts = [1, 7, 16].map((id) => packagingProducts.find((product) => product.id === id)!);
@@ -79,13 +80,21 @@ export default function Home() {
             <a className="home-text-link" href="/products">Tüm ürünleri görüntüle <span aria-hidden="true">↗</span></a>
           </div>
           <div className="home-category-grid">
-            {packagingCategories.map((category) => (
-              <a className="home-category-card" href="/products" key={category.name}>
-                <span className="home-icon-box"><CategoryIcon name={category.icon} /></span>
-                <h3>{category.name}</h3><p>{category.description}</p>
-                <span className="category-card-link">Katalogda incele <span aria-hidden="true">↗</span></span>
-              </a>
-            ))}
+            {packagingCategories.map((category) => {
+              const seoPage = getCategorySeoByName(category.name);
+
+              if (!seoPage) {
+                throw new Error(`Kategori SEO eşlemesi bulunamadı: ${category.name}`);
+              }
+
+              return (
+                <a className="home-category-card" href={`/kategori/${seoPage.slug}`} key={category.name}>
+                  <span className="home-icon-box"><CategoryIcon name={category.icon} /></span>
+                  <h3>{category.name}</h3><p>{category.description}</p>
+                  <span className="category-card-link">Katalogda incele <span aria-hidden="true">↗</span></span>
+                </a>
+              );
+            })}
           </div>
         </div>
       </section>

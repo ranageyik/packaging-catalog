@@ -1,6 +1,7 @@
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
 export const siteUrl = new URL(configuredSiteUrl || "https://stambalaj.com.tr");
+export const canonicalSiteUrl = new URL("https://stambalaj.com.tr");
 
 const whatsappPhoneE164 = "+905422543628";
 const whatsappPhoneDigits = whatsappPhoneE164.replace(/\D/g, "");

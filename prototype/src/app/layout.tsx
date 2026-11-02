@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import { QuoteListProvider } from "./components/quote-list-provider";
-import { siteUrl } from "./site-config";
+import { canonicalSiteUrl } from "./site-config";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,7 +15,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  metadataBase: siteUrl,
+  metadataBase: canonicalSiteUrl,
   title: "ST Ambalaj | Ambalaj Ürünleri",
   description: "Koli bandı, streç film, balonlu naylon, köşe koruyucu, nakliye poşeti ve iş eldiveni.",
   alternates: {

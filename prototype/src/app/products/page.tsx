@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { packagingCategories, packagingProducts } from "../catalog-data";
 import { SiteFooter, SiteHeader } from "../components/site-chrome";
 import { WhatsAppLink } from "../components/whatsapp-link";
-import { siteUrl } from "../site-config";
+import { canonicalSiteUrl } from "../site-config";
 import CatalogBrowser from "./catalog-browser";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: "ST Ambalaj",
     title: "Ürün Kataloğu | ST Ambalaj",
     description: "Ürünleri bulun, miktarı belirtin ve WhatsApp’tan teklif isteyin.",
-    url: new URL("/products", siteUrl),
+    url: new URL("/products", canonicalSiteUrl),
   },
   twitter: {
     card: "summary",
