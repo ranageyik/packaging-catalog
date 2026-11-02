@@ -11,6 +11,7 @@ export type PackagingProduct = {
   category: string;
   description: string;
   specs: string[];
+  unit?: string;
   brand?: string;
   shape: "tape" | "roll" | "corner" | "bubble" | "bag" | "glove";
 };

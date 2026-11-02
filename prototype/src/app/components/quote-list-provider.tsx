@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
-import type { PackagingProduct } from "../catalog-data";
+import { packagingProducts, type PackagingProduct } from "../catalog-data";
 
 export type QuoteListItem = {
   code: string;
@@ -32,7 +32,7 @@ let initialized = false;
 const listeners = new Set<() => void>();
 const QuoteListContext = createContext<QuoteListContextValue | null>(null);
 
-function isQuoteListItem(value: unknown): value is QuoteListItem {
+function isQuoteListItem(value: unknown): value is Omit<QuoteListItem, "unit"> & { unit?: string } {
   if (!value || typeof value !== "object") return false;
 
   const item = value as Record<string, unknown>;
@@ -41,7 +41,7 @@ function isQuoteListItem(value: unknown): value is QuoteListItem {
     && typeof item.quantity === "number"
     && Number.isFinite(item.quantity)
     && item.quantity > 0
-    && typeof item.unit === "string";
+    && (typeof item.unit === "string" || typeof item.unit === "undefined");
 }
 
 function readStorage(): QuoteListState {
@@ -77,7 +77,31 @@ function readStorage(): QuoteListState {
     };
   }
 
-  return { items: parsed, isReady: true, storageError: "" };
+  const items: QuoteListItem[] = parsed.map((item) => {
+    const unit = item.unit ?? "";
+    const productUnit = packagingProducts.find((product) => product.code === item.code)?.unit;
+    const hasUnverifiedDefaultUnit = unit.trim().toLocaleLowerCase("tr") === "adet"
+      && productUnit?.trim().toLocaleLowerCase("tr") !== "adet";
+    return {
+      ...item,
+      unit: hasUnverifiedDefaultUnit ? "" : unit,
+    };
+  });
+  const removedUnverifiedUnits = items.some((item, index) => item.unit !== parsed[index].unit);
+
+  if (removedUnverifiedUnits) {
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(items));
+    } catch {
+      return {
+        items,
+        isReady: true,
+        storageError: "Eski listedeki doğrulanmamış birimler kaldırıldı ancak değişiklik tarayıcıya kaydedilemedi.",
+      };
+    }
+  }
+
+  return { items, isReady: true, storageError: "" };
 }
 
 function getSnapshot() {
@@ -134,7 +158,7 @@ function addProduct(product: PackagingProduct) {
         : item);
     }
 
-    return [...items, { code: product.code, name: product.name, quantity: 1, unit: "adet" }];
+    return [...items, { code: product.code, name: product.name, quantity: 1, unit: product.unit?.trim() ?? "" }];
   });
 }
 

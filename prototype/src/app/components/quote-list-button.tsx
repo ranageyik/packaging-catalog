@@ -9,12 +9,14 @@ export function QuoteListButton({ product }: { product: PackagingProduct }) {
 
   return (
     <button
-      aria-label={`${product.name} ürününü teklif listesine ${item ? "bir adet daha ekle" : "ekle"}`}
+      aria-label={`${product.name} ürününü teklif listesine ${item ? "miktarı bir artır" : "ekle"}`}
       className="quote-list-add-button"
       onClick={() => addProduct(product)}
       type="button"
     >
-      {item ? `Teklif listesinde · ${item.quantity} ${item.unit}` : "Teklif İste"}
+      {item
+        ? `Teklif listesinde · ${item.quantity}${item.unit.trim() ? ` ${item.unit.trim()}` : ""}`
+        : "Teklif İste"}
       <span aria-hidden="true">+</span>
     </button>
   );
