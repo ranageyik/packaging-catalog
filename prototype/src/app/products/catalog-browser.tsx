@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import type { PackagingProduct } from "../catalog-data";
+import { normalizeSearchText } from "../catalog-search";
+import { QuoteListButton } from "../components/quote-list-button";
 
 type CatalogBrowserProps = {
   products: PackagingProduct[];
@@ -52,15 +54,21 @@ export default function CatalogBrowser({ products, categories }: CatalogBrowserP
   const [sort, setSort] = useState("default");
 
   const filteredProducts = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase("tr-TR");
+    const query = normalizeSearchText(search);
 
     return products
       .filter((product) => {
-        const matchesSearch =
-          product.name.toLocaleLowerCase("tr-TR").includes(query) ||
-          product.code.toLocaleLowerCase("tr-TR").includes(query) ||
-          product.brand?.toLocaleLowerCase("tr-TR").includes(query) ||
-          product.specs.some((spec) => spec.toLocaleLowerCase("tr-TR").includes(query));
+        const searchableFields = [
+          product.name,
+          product.brand ?? "",
+          product.code,
+          product.category,
+          product.description,
+          ...product.specs,
+        ];
+        const matchesSearch = searchableFields.some((field) =>
+          normalizeSearchText(field).includes(query),
+        );
         const matchesCategory = category === allCategoriesLabel || product.category === category;
 
         return matchesSearch && matchesCategory;
@@ -147,9 +155,7 @@ export default function CatalogBrowser({ products, categories }: CatalogBrowserP
                       <summary>Ürün özellikleri</summary>
                       <ul>{product.specs.map((spec) => <li key={spec}>{spec}</li>)}</ul>
                     </details>
-                    <a className="catalog-product-quote" href="#teklif">
-                      Bu ürün için teklif iste <span aria-hidden="true">↗</span>
-                    </a>
+                    <QuoteListButton product={product} />
                   </div>
                 </article>
               ))}

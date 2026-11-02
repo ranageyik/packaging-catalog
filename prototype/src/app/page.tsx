@@ -2,18 +2,16 @@
 import type { ReactNode } from "react";
 import { packagingCategories, packagingProducts } from "./catalog-data";
 import { SiteFooter, SiteHeader } from "./components/site-chrome";
+import { QuoteListButton } from "./components/quote-list-button";
+import { WhatsAppLink } from "./components/whatsapp-link";
 import { contactDetails } from "./site-config";
-
-const whatsappUrl = contactDetails.phone
-  ? `https://wa.me/${contactDetails.phone.replace(/\D/g, "")}`
-  : "";
 
 const featuredProducts = [1, 7, 16].map((id) => packagingProducts.find((product) => product.id === id)!);
 
 const reasons = [
-  { title: "Kaliteli Ürünler", description: "Ürün seçeneklerini inceleyin; malzeme ve kullanım detaylarını ihtiyaçlarınıza göre değerlendirin.", icon: "quality" },
-  { title: "Hızlı Tedarik", description: "Ürün ve teslimat seçeneklerini sipariş ihtiyacınıza göre birlikte netleştirelim.", icon: "delivery" },
-  { title: "Profesyonel Destek", description: "Ürün seçimi ve teklif sürecindeki sorularınız için bizimle iletişime geçin.", icon: "support" },
+  { title: "Ürünü bulun", description: "Katalogda ürün adına veya koduna göre arama yapın.", icon: "tape" },
+  { title: "Teklif listenizi hazırlayın", description: "Ürünleri ekleyin, miktarı ve birimi belirtin.", icon: "box" },
+  { title: "WhatsApp’tan gönderin", description: "Mesajınızı kontrol edin ve WhatsApp üzerinden kendiniz iletin.", icon: "support" },
 ];
 
 function CategoryIcon({ name }: { name: string }) {
@@ -47,14 +45,19 @@ export default function Home() {
       <section className="home-hero" aria-labelledby="hero-title">
         <div className="home-container home-hero-grid">
           <div className="home-hero-copy">
-            <p className="home-eyebrow">İŞLETMELER İÇİN AMBALAJ ÇÖZÜMLERİ</p>
-            <h1 id="hero-title">İşletmeniz için doğru <span>ambalaj</span> çözümleri.</h1>
-            <p className="home-hero-description">Ürünlerinizi paketlemek ve göndermek için ihtiyacınıza uygun seçenekleri keşfedin. Kataloğumuzu inceleyin, teklif için bize ulaşın.</p>
+            <p className="home-eyebrow">ST AMBALAJ · ÜRÜN KATALOĞU</p>
+            <h1 id="hero-title">İşletmeniz için <span>ambalaj</span> ürünleri.</h1>
+            <p className="home-hero-description">Koli bandı, streç film, balonlu naylon ve daha fazlası.</p>
             <div className="home-hero-actions">
-              <a className="home-button home-button-primary" href="#urunler">Ürünleri Keşfet <span aria-hidden="true">↗</span></a>
-              <a className="home-button home-button-secondary" href="#iletisim">Bize Ulaşın</a>
+              <WhatsAppLink className="home-button home-button-light">WhatsApp’tan Teklif Alın</WhatsAppLink>
+              <a className="home-hero-phone" href={`tel:${contactDetails.phone}`}>
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z" />
+                </svg>
+                {contactDetails.phoneDisplay}
+              </a>
             </div>
-            <div className="hero-caption"><span aria-hidden="true" /> Farklı ambalaj grupları, tek katalogda.</div>
+            <div className="hero-caption"><span aria-hidden="true" /> Ürün koduyla arayın, teklif listenize ekleyin.</div>
           </div>
 
           <div className="hero-visual" role="img" aria-label="Karton kutu, kraft kâğıt poşet ve kargo ambalajını temsil eden ürün görsel alanı">
@@ -72,15 +75,15 @@ export default function Home() {
       <section className="home-section home-categories" id="kategoriler" aria-labelledby="categories-title">
         <div className="home-container">
           <div className="home-section-heading">
-            <div><p className="home-eyebrow">ÜRÜN GRUPLARIMIZ</p><h2 id="categories-title">İhtiyacınıza göre<br />ambalaj seçenekleri.</h2></div>
-            <a className="home-text-link" href="/products">Tüm ürünleri gör <span aria-hidden="true">↗</span></a>
+            <div><p className="home-eyebrow">ÜRÜN GRUPLARI</p><h2 id="categories-title">Ambalaj kategorileri</h2></div>
+            <a className="home-text-link" href="/products">Tüm ürünleri görüntüle <span aria-hidden="true">↗</span></a>
           </div>
           <div className="home-category-grid">
             {packagingCategories.map((category) => (
               <a className="home-category-card" href="/products" key={category.name}>
                 <span className="home-icon-box"><CategoryIcon name={category.icon} /></span>
                 <h3>{category.name}</h3><p>{category.description}</p>
-                <span className="category-card-link">Ürünleri incele <span aria-hidden="true">↗</span></span>
+                <span className="category-card-link">Katalogda incele <span aria-hidden="true">↗</span></span>
               </a>
             ))}
           </div>
@@ -90,8 +93,8 @@ export default function Home() {
       <section className="home-section home-products" id="urunler" aria-labelledby="products-title">
         <div className="home-container">
           <div className="home-section-heading">
-            <div><p className="home-eyebrow">ÖNE ÇIKANLAR</p><h2 id="products-title">Katalogdan seçtiklerimiz.</h2></div>
-            <p className="home-section-note">Ambalaj ürünlerimizi inceleyin; tüm ürün seçenekleri katalog sayfasında.</p>
+            <div><p className="home-eyebrow">ÜRÜN KATALOĞU</p><h2 id="products-title">Ambalaj ürünlerimiz</h2></div>
+            <p className="home-section-note">Ürünleri inceleyin, teklif listenize ekleyin.</p>
           </div>
           <div className="home-product-grid">
             {featuredProducts.map((product, index) => (
@@ -103,18 +106,18 @@ export default function Home() {
                 <div className="home-product-info">
                   <p className="home-product-category">{product.category}</p><h3>{product.name}</h3>
                   <p className="home-product-code">Ürün kodu: {product.code}</p>
-                  <a className="home-product-link" href="/products#teklif" aria-label={`${product.name} için teklif iste`}>Teklif iste <span aria-hidden="true">↗</span></a>
+                  <QuoteListButton product={product} />
                 </div>
               </article>
             ))}
           </div>
-          <div className="home-products-all"><a className="home-button home-button-secondary" href="/products">Tüm ürünleri gör <span aria-hidden="true">↗</span></a></div>
+          <div className="home-products-all"><a className="home-button home-button-secondary" href="/products">Kataloğun tamamını görün <span aria-hidden="true">↗</span></a></div>
         </div>
       </section>
 
       <section className="home-section home-reasons" id="hakkimizda" aria-labelledby="reasons-title">
         <div className="home-container">
-          <div className="home-section-heading"><div><p className="home-eyebrow">ST AMBALAJ</p><h2 id="reasons-title">İhtiyacınıza odaklanan<br />bir çalışma yaklaşımı.</h2></div></div>
+          <div className="home-section-heading"><div><p className="home-eyebrow">TEKLİF SÜRECİ</p><h2 id="reasons-title">Teklifinizi üç adımda hazırlayın.</h2></div></div>
           <div className="home-reasons-grid">
             {reasons.map((reason) => (
               <article className="home-reason" key={reason.title}>
@@ -128,12 +131,8 @@ export default function Home() {
 
       <section className="home-contact-section" id="iletisim" aria-labelledby="contact-title">
         <div className="home-container home-contact-panel">
-          <div><p className="home-eyebrow">TEKLİF VE BİLGİ</p><h2 id="contact-title">İşletmeniz için ambalaj seçeneklerini birlikte değerlendirelim.</h2><p>Ürün, ölçü veya sipariş ihtiyacınızı paylaşın; size uygun seçenekler hakkında görüşelim.</p></div>
-          {whatsappUrl ? (
-            <a className="home-button home-button-light" href={whatsappUrl} target="_blank" rel="noreferrer">WhatsApp ile iletişim <span aria-hidden="true">↗</span></a>
-          ) : (
-            <a className="home-button home-button-light" href="#footer-contact">İletişim bilgileri <span aria-hidden="true">↓</span></a>
-          )}
+          <div><p className="home-eyebrow">WHATSAPP İLETİŞİM</p><h2 id="contact-title">Ürün ve miktarı yazın, teklif isteyin.</h2><p>WhatsApp’tan fiyat ve tedarik bilgisi isteyin.</p></div>
+          <WhatsAppLink className="home-button home-button-light">WhatsApp’tan Teklif Alın</WhatsAppLink>
         </div>
       </section>
 
