@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 228 48" role="img" aria-label="ST Ambalaj">
+  <path fill="#a6162b" d="M24 2 46 13v22L24 46 2 35V13Zm0 6L10 15l14 7 14-7Zm-16 12v11l13 7V27Zm19 7v11l13-7V20Z"/>
+  <path fill="#a6162b" d="m15 12 22 11v5L15 17z"/>
+  <path fill="#17202b" d="M57 15h20v5H62v4h15v13H57v-5h15v-3H57zm24 0h22v5h-8v17h-6V20h-8z"/>
+  <path fill="#b7bcc1" d="M112 13h1v26h-1z"/>
+  <path fill="#17202b" fill-rule="evenodd" d="M124 33l5-15h4l5 15h-4l-1-3h-5l-1 3zm5-6h3l-1.5-5zm11-9h4l4 8 4-8h4v15h-3.5v-9l-3.4 7H147l-3.5-7v9H140zm19 0h8a4 4 0 0 1 2.6 7 4.2 4.2 0 0 1-2.5 8H159zm3.6 3v3h3.7a1.5 1.5 0 0 0 0-3zm0 6v3h4a1.5 1.5 0 0 0 0-3zm10 6 5-15h4l5 15H183l-1-3h-5l-1 3zm5.4-6h3l-1.5-5zm11-9h3.7v12h6.3v3h-10zm11 15 5-15h4l5 15h-4l-1-3h-5l-1 3zm5-6h3l-1.5-5zm16-9h3.7v10a5.5 5.5 0 0 1-10.7 1.7l3-1.2c.5 2 4 2.5 4-.5z"/>
+</svg>

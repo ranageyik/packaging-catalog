@@ -1,0 +1,19 @@
+ST Ambalaj kurulum
+
+PHP 8.1 veya üzeri, Fileinfo uzantısı ve Apache mod_rewrite gerekir.
+Klasör içeriğini alan adının belge köküne çıkarın. Gizli .htaccess dosyalarını da yükleyin.
+veri ve yuklemeler klasörleri PHP kullanıcısı tarafından yazılabilir olmalıdır.
+Apache AllowOverride ayarı .htaccess kurallarının uygulanmasına izin vermelidir.
+Nginx kullanılıyorsa statik dosyalar dışındaki adresleri index.php dosyasına yönlendirin ve /veri/ yolunu tamamen kapatın.
+
+Hosting dosya yöneticisinde veri/kurulum-anahtari.txt oluşturun ve içine en az 32 karakterli rastgele bir anahtar koyun. HTTPS üzerinden /yonetim adresini açıp bu anahtarla ilk yönetici şifresini oluşturun. Alternatif olarak sunucuda proje klasöründe php kurulum.php çalıştırabilirsiniz. Mevcut yönetici hesabınız varsa doğrudan /yonetim adresinden giriş yapın.
+Yönetim paneli /yonetim adresindedir.
+Sunucunuzun upload_max_filesize ve post_max_size değerleri çoklu görsel yükleme boyutlarını karşılamalıdır.
+Fiyatı sitede göster kutusu işaretlenmediğinde fiyat panelde saklanır ve ziyaretçi sayfalarına yazılmaz.
+Varsayılan fotoğraflar ürün koduna göre eşleştirilir. Mevcut özel ürün galerileri korunur. Diğer fotoğrafları panelden ekleyebilirsiniz.
+Mevcut kayıtları güncellemelerde korumak için veri/urunler.json, veri/yonetici.json ve yuklemeler klasörünü yedekleyin.
+/products adresi /urunler adresine kalıcı olarak yönlenir. Mevcut /kategori/ adresleri korunur.
+
+Yerel deneme için php -S 127.0.0.1:8000 router.php komutunu çalıştırın.
+
+Güncelleme: Paket içindeki index.php, stil.css, veri/urun-kapaklari.json, veri/kategori-kapaklari.json ve yuklemeler/ içeriğini mevcut dizinlere kopyalayın. Mevcut ürün ve yönetici kayıtlarını korumak için veri/urunler.json ve veri/yonetici.json dosyalarını yerinde bırakın. Panelden özel galeri kaydedilmiş ürünlerde mevcut galeri kullanılır.
